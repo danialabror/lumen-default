@@ -36,3 +36,10 @@ $router->get('/siswa/kelas/{id_kelas}', ['uses' => 'SiswaController@showbykelas'
 $router->get('/siswa/sekolah/{id}', ['uses' => 'SiswaController@showbysekolah']);
 $router->get('/siswa/sekolah/kelas/{id}', ['uses' => 'SiswaController@sortirkelas']);
 
+
+$router->post('/siswa', ['uses' => 'SiswaController@store']);
+$router->patch('/siswa/{id}', ['uses' => 'SiswaController@update']);
+$router->delete('/siswa/{id}', ['uses' => 'SiswaController@delete']);
+$router->get('/siswa/kelas/{id_kelas}', ['uses' => 'SiswaController@showbykelas']);
+$router->get('/siswa/sekolah/{id}', ['uses' => 'SiswaController@showbysekolah']);
+$router->get('/siswa/sekolah/kelas/{id}', ['uses' => 'SiswaController@sortirkelas']);
