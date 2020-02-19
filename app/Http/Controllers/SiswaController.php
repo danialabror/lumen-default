@@ -116,11 +116,14 @@ class SiswaController extends Controller
     {
         $siswa = Siswa::where('id_kelas', $id_kelas)->get();
 
+        $siswaCount = $siswa->count();
+
         $result = ["message" => "data tidak ditemukan"];
 
             if ($siswa){
                 $result = array(
                     "message" => "data ditemukan",
+                    "jumlah" => $siswaCount,
                     "data" => $siswa
                 );
                 return response()->json($result);
@@ -138,12 +141,15 @@ class SiswaController extends Controller
 
         $siswa = Siswa::whereIn('id_kelas', $kelasId)->get();
 
+        $countSiswa = $siswa->count();
+
         $result = array(
             'message' => 'Data Berhasil di Tampilkan.',
-            'data' => $siswa
+            'jumlah' => $countSiswa,
+            'data' => $siswa,
         );
 
-        return response()->z($result);
+        return response()->json($result);
         //========================================
     //     $sekolah = Sekolah::find($id);
     //     $kelas = Kelas::where('id_sekolah', $id)->get();
@@ -177,10 +183,29 @@ class SiswaController extends Controller
                 $q->with('siswa');
             }
         ])->find($id);
-        
+
+        $kelas = Kelas::where('id_sekolah', $id)->get();
+        $kelasId = $kelas->pluck('id');
+
+        // $countKelas = $kelas->count();
+
+        $countSiswa = Siswa::whereIn('id_kelas', $kelasId)->count();
+
+        $data = [];
+
+        $data = $sekolah;
+        $countKelas = count($sekolah['kelas']);
+
+        foreach($sekolah['kelas'] as $key => $val) {
+            $sekolah['kelas'][$key]['jumlah_siswa'] = count($val['siswa']); //kelas yg ada di dalem sekolah.. tambahin jumlah_siswa di index ke $key isinya count dari siswa per kelas
+            //$sekolah['array yang ingin ditambahkan'][posisi/index-ke?]['apa yang ditambahkan'] = count($val/isian dari array yg ditambahin['isian dari $val'] )
+        }
+                
         $result = array(
             'message' => 'Data Berhasil di Tampilkan.',
-            'data' => $sekolah
+            'jumlah_kelas' => $countKelas,
+            'jumlah_siswa' => $countSiswa,
+            'data' => $data
         );
         return response()->json($result);
      
@@ -211,5 +236,112 @@ class SiswaController extends Controller
     //     return response()->json($result);
     // }
             }
-        }
 
+            public function countSiswaKelas(Request $request, $id)
+            {
+                $siswa = Siswa::where('id_kelas', $id)->count();
+
+                $result = ["message" => "Data tidak ditemukan"];
+
+                if ($siswa) {
+                    $result = ["jumlah" => $siswa];
+
+                    return response()->json($result);
+                }
+                return response()->json($result);
+            }
+
+            public function countSiswaSekolah(Request $request, $id)
+            {
+                $kelas = Kelas::where('id_sekolah', $id)->get();
+
+                $kelasId = $kelas->pluck('id');
+
+                $siswa = Siswa::whereIn('id_kelas', $kelasId)->count();
+
+                $result = array(
+                    'jumlah' => $siswa
+                );
+
+                    if (!$siswa) {
+                        $result = [
+                            'data' => "data tak ditemukan"
+                        ];
+                     return response()->json($result);
+                    }
+           }
+
+        //    $lemari = [
+        //     'kunci 1' => 1,
+        //     'kunci 2' => 2,
+        // ];
+        // $array = [1,2,3,4];
+        // $object = array('kunci' => 'isi', 'kunci2' => 'isi2');
+        // // unset($object['kunci2']);
+        // // // array_push($lemari, 10);
+        // // // array_splice($lemari, 1, 2, 10);
+        // // // array_shift($lemari);
+        // // // array_unshift($lemari, 10);
+        // // $jumlah = array_($lemari);
+        // $result = array(
+        //     'array' => $array,
+        //     'object' => $object
+        // );
+        // return response()->json($result);
+
+           public function challengeArray1()
+           {
+            $lemari = ['Baju', 'Uang', 'Celana', 'Laptop', 'Buku'];
+            $tas = [];
+            // Cuma Boleh koding di daerah sini
+            $ambil = ['Uang', 'Laptop', 'Celana'];
+            $tas = array_values($ambil);
+            $lemari = array_diff($lemari, $ambil);
+            //
+            $result = array(
+                'Barang di Lemari' => $lemari,
+                'Barang yang di bawa di tas' => $tas
+            );
+            return response()->json($result);
+           }
+
+        //    $arr1 = array('a' => 1, 'b' => 3, 'c' => 10);
+        //    $arr2 = array('a' => 2, 'b' => 10, 'c' => 90);
+        //    $ret = array();
+        //    foreach ($arr1 as $key => $value) {
+        //        $ret[$key] = $arr2[$key] - $arr1[$key];
+        //    }
+        //    return response()->json($ret);
+        //            }
+
+           public function challengeArray2()
+           {
+            $lemari = array(
+                "Baju" => 10, //3
+                "Celana" => 5, //2
+                "Laptop" => 2,  //1
+            );
+            $tas = array();
+            // Cuma Boleh koding di daerah sini
+            $tas = array(
+                "Baju" => 3,
+                "Celana" => 2,
+                "Laptop" => 1
+            );
+
+                foreach ($lemari as $key => $val) {
+                    $lemari[$key] = $lemari[$key] - $tas[$key];
+                }
+             // CONTOH (Pengerjaan nya tidak seperti ini, ini hanya simulasi)
+
+            $hasil = array(
+                'Barang di Lemari' => $lemari,
+                'Barang yang di bawa di tas' => $tas,
+            );
+            $result = array(
+                'Hasil' => $hasil,
+            );
+            return response()->json($result);
+           }
+
+    }

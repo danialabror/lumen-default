@@ -35,4 +35,14 @@ $router->delete('/siswa/{id}', ['uses' => 'SiswaController@delete']);
 $router->get('/siswa/kelas/{id_kelas}', ['uses' => 'SiswaController@showbykelas']);
 $router->get('/siswa/sekolah/{id}', ['uses' => 'SiswaController@showbysekolah']);
 $router->get('/siswa/sekolah/kelas/{id}', ['uses' => 'SiswaController@sortirkelas']);
+$router->get('/siswa/kelas/jumlah/{id}', ['uses' => 'SiswaController@countSiswaKelas']);
+$router->get('/siswa/sekolah/jumlah/{id}', ['uses' => 'SiswaController@countSiswaSekolah']);
+
+//// ====================== Array ================================
+$router->get('/siswa/array',['uses' => 'SiswaController@challengeArray1']);
+$router->get('/siswa/array/2',['uses' => 'SiswaController@challengeArray2']);
+
+$router->delete('/sekolah/{id}', ['uses' => 'SekolahController@delete']);
+$router->delete('/sekolah/{id}', ['uses' => 'SekolahController@delete']);
+
 
